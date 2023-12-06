@@ -47,9 +47,30 @@ def a_star(G, s, d, h):
     # Return None if no path is found
     return None, []
 
-def test_a_star(num_nodes, weight_limit):
+def print_graph(G):
+    print("Graph Structure:")
+    for node in G.adj:
+        edges = [(neighbor, G.w(node, neighbor)) for neighbor in G.adjacent_nodes(node)]
+        print(f"Node {node}: Connected to {edges}")
+
+def print_path_details(pred, path, G):
+    if path:
+        total_cost = 0
+        print("Path:", end=" ")
+        for i in range(len(path) - 1):
+            step_cost = G.w(path[i], path[i + 1])
+            total_cost += step_cost
+            print(f"{path[i]} -> {path[i + 1]} (Cost: {step_cost})", end=", ")
+        print(f"\nTotal Cost: {total_cost}")
+    else:
+        print("No path found.")
+
+
+def test_a_star(num_nodes, weight_limit, max_heuristic_value):
     G = create_random_complete_graph(num_nodes, weight_limit)
-    heuristic = {node: 1 for node in G.adj}
+    heuristic = {node: random.uniform(0, max_heuristic_value) for node in G.adj}
+
+    print_graph(G)  # Print the graph structure
 
     # Randomly choose start and destination nodes
     start = random.randint(0, num_nodes - 1)
@@ -58,20 +79,12 @@ def test_a_star(num_nodes, weight_limit):
         destination = random.randint(0, num_nodes - 1)
 
     pred, path = a_star(G, start, destination, heuristic)
-    print(f"Path from {start} to {destination} in graph with {num_nodes} nodes: {path}")
+    print(f"\nPath from {start} to {destination} in graph with {num_nodes} nodes: {path}")
+    print_path_details(pred, path, G)  # Print details about the path
 
 # Test cases
 print("Small Graph Test")
-test_a_star(5, 10)
+test_a_star(5, 10, 5)
 
 print("\nMedium Graph Test")
-test_a_star(10, 20)
-
-print("\nLarge Graph Test")
-test_a_star(20, 30)
-
-print("\nDense Graph Test")
-test_a_star(15, 5)
-
-print("\nSparse Graph Test")
-test_a_star(10, 50)
+test_a_star(10, 20, 10)
