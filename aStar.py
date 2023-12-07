@@ -47,6 +47,7 @@ def a_star(G, s, d, h):
     # Return None if no path is found
     return None, []
 
+
 def print_graph(G):
     print("Graph Structure:")
     for node in G.adj:
