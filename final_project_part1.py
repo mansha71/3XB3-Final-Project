@@ -57,30 +57,67 @@ def dijkstra(G, source):
     return dist
 
 
-def dijkstra_pred(G, source):
-    pred = {} #Predecessor dictionary. Isn't returned, but here for your understanding
-    dist = {} #Distance dictionary
+
+def dijkstra_early_stop(G, source, dest):
+    pred = {}  # Predecessor dictionary
+    dist = {}  # Distance dictionary
     Q = min_heap.MinHeap([])
     nodes = list(G.adj.keys())
 
-    #Initialize priority queue/heap and distances
+    # Initialize priority queue/heap and distances
     for node in nodes:
         Q.insert(min_heap.Element(node, float("inf")))
         dist[node] = float("inf")
+    dist[source] = 0
     Q.decrease_key(source, 0)
 
-    #Meat of the algorithm
+    # Meat of the algorithm
     while not Q.is_empty():
         current_element = Q.extract_min()
         current_node = current_element.value
-        dist[current_node] = current_element.key
-        for neighbour in G.adj[current_node]:
-            if dist[current_node] + G.w(current_node, neighbour) < dist[neighbour]:
-                Q.decrease_key(neighbour, dist[current_node] + G.w(current_node, neighbour))
-                dist[neighbour] = dist[current_node] + G.w(current_node, neighbour)
-                pred[neighbour] = current_node
-    return pred
 
+        if current_node == dest:
+            return pred
+
+        for neighbour in G.adj[current_node]:
+            alt = dist[current_node] + G.w(current_node, neighbour)
+            if alt < dist[neighbour]:
+                dist[neighbour] = alt
+                pred[neighbour] = current_node
+                Q.decrease_key(neighbour, alt)
+
+    return []  # If destination is not reachable
+
+
+def a_star_t(G, source, dest, heuristic):
+    pred = {}  # Predecessor dictionary
+    dist = {}  # Distance from source to node
+    Q = min_heap.MinHeap([])
+    nodes = list(G.adj.keys())
+
+    # Initialize priority queue/heap, distances and heuristic estimates
+    for node in nodes:
+        Q.insert(min_heap.Element(node, float("inf")))
+        dist[node] = float("inf")
+    dist[source] = 0
+    Q.decrease_key(source, heuristic[source])
+
+    # Meat of the algorithm
+    while not Q.is_empty():
+        current_element = Q.extract_min()
+        current_node = current_element.value
+
+        if current_node == dest:
+            return pred
+
+        for neighbour in G.adj[current_node]:
+            alt = dist[current_node] + G.w(current_node, neighbour)
+            if alt < dist[neighbour]:
+                dist[neighbour] = alt
+                pred[neighbour] = current_node
+                Q.decrease_key(neighbour, alt + heuristic[neighbour])
+
+    return []  # If destination is not reachable
 
 def bellman_ford(G, source):
     pred = {} #Predecessor dictionary. Isn't returned, but here for your understanding

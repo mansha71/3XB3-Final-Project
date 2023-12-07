@@ -39,6 +39,7 @@ def read_data():
         line[row.station2] = row.line
         w = calculate_weigth(lat1,long1,lat2,long2)
         g.add_edge(row.station1,row.station2,w)
+        g.add_edge(row.station2,row.station1,w)
 
     return (g,dict_stations,line)
    

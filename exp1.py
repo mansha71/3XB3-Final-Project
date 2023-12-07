@@ -62,20 +62,10 @@ def plot_runtimes_impl1(x, y1, y2):
     #drawing out the graph
     plt.plot(x, y1, label='dijkstras')
     plt.plot(x, y2, label='bell ford')
-    plt.xlabel('Relaxation Threshold')
-    plt.ylabel('Relative Path Cost')
+    plt.xlabel('Number of Items')
+    plt.ylabel('Runtime (s)')
     plt.legend()
-    plt.title('Comparison of Path Cost with Different Relaxation Threshold')
-    plt.show()
-    
-def plot_runtimes_impl2(x, y1, y2):
-    #drawing out the graph
-    plt.plot(x, y1, label='dijkstras')
-    plt.plot(x, y2, label='bell ford')
-    plt.xlabel('Number of Nodes in Graph')
-    plt.ylabel('Relative Path Cost')
-    plt.legend()
-    plt.title('Performance of Mystery Function Across Different Graph Sizes')
+    plt.title('Ks Recursion vs Ks Brute Force')
     plt.show()
 
 def calc_path(path,source):
@@ -107,7 +97,7 @@ def main():
     plot_runtimes_impl1(x,y,y1)
 
 
-def main1():
+def main():
     #expermint 1 a
     weight_upper = 50
     max_relax = 50
@@ -132,9 +122,9 @@ def main1():
     plt.plot(x, y, label='dijkstras')
     plt.plot(x, y1, label='bell ford')
     plt.xlabel('Number of nodes')
-    plt.ylabel('Maximum Number of Relaxation')
+    plt.ylabel('Number of Relaxation')
     plt.legend()
-    plt.title('Maximum Relaxations required for increasing Graph Size')
+    plt.title('Ks Recursion vs Ks Brute Force')
     plt.show()
 
 
@@ -142,7 +132,6 @@ def main1():
 
 
 def main2():
-    #expermint 2 a
     n = 40
     weight_upper = 50
     max_relax = 50
@@ -191,7 +180,7 @@ def main3():
         diff = path_total/total
         x.append(i)
         y1.append(diff)
-    plot_runtimes_impl2(x,y,y1)
+    plot_runtimes_impl1(x,y,y1)
 
 
 def mystery_fuction_exp():
@@ -218,4 +207,4 @@ def mystery_fuction_exp():
 
 
 if __name__ == "__main__":
-    main(); main1()
+    mystery_fuction_exp()
