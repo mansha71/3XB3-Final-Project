@@ -69,13 +69,12 @@ def plot_runtimes_impl1(x, y1, y2):
     plt.show()
     
 def plot_runtimes_impl2(x, y1, y2):
-    #drawing out the graph
     plt.plot(x, y1, label='dijkstras')
     plt.plot(x, y2, label='bell ford')
     plt.xlabel('Number of Nodes in Graph')
     plt.ylabel('Relative Path Cost')
     plt.legend()
-    plt.title('Performance of Mystery Function Across Different Graph Sizes')
+    plt.title('Impact of Graph Size on Path Cost with Fixed Relaxation Limit')
     plt.show()
 
 def calc_path(path,source):
@@ -136,66 +135,48 @@ def main1():
     plt.legend()
     plt.title('Maximum Relaxations required for increasing Graph Size')
     plt.show()
-
-
-
-
-
+    
 def main2():
-    #expermint 2 a
-    n = 40
-    weight_upper = 50
-    max_relax = 50
-    g = create_random_complete_graph(n,weight_upper)
-    source = list(g.adj.keys())[0]
-    correct_path = dijkstra(g,source)
-    total = calc_path(correct_path,source)
-    x = []
-    y =[]
-    y1 =[]
-    for i in range(1,max_relax):
-        path_total = calc_path(dijkstra_limit(g,source,i),source)
-        diff = path_total/total
-        y.append(diff)
-        path_total = calc_path(bellman_ford_limit(g,source,i),source)
-        diff = path_total/total
-        x.append(i)
-        y1.append(diff)
-    plot_runtimes_impl1(x,y,y1)
+    max_nodes = 50 
+    max_k = 20  
+    weight_upper = 50 
 
+    x = []  
+    y_dijkstra = [] 
+    y_bellman = [] 
 
+    g = create_random_complete_graph(max_nodes, weight_upper)
+    source = list(g.adj.keys())[0] 
 
+    correct_path_dijkstra = dijkstra(g, source)
+    total_dijkstra = calc_path(correct_path_dijkstra, source)
 
-def main3():
-    #expermint 2 a
-    n = 40
-    weight_upper = 50
-    max_nodes = 100
-    max_relax = 50
-    limit = 20
-    g = create_random_complete_graph(n,weight_upper)
-    source = list(g.adj.keys())[0]
-    correct_path = dijkstra(g,source)
-    total = calc_path(correct_path,source)
-    x = []
-    y =[]
-    y1 =[]
-    for i in range(1,max_nodes):
+    correct_path_bellman = bellman_ford(g, source)
+    total_bellman = calc_path(correct_path_bellman, source)
 
-        g = create_random_complete_graph(i,i)
-        source = list(g.adj.keys())[0]
-        path_total = calc_path(dijkstra_limit(g,source,limit)[0],source)
-        diff = path_total/total
-        y.append(0)
-        path_total = calc_path(bellman_ford_limit(g,source,limit)[0],source)
-        diff = path_total/total
-        x.append(i)
-        y1.append(diff)
-    plot_runtimes_impl2(x,y,y1)
+    for k in range(1, max_k + 1):
+        x.append(k)
+
+        approx_path_dijkstra, _ = dijkstra_limit(g, source, k)  # Unpack the tuple
+        total_approx_dijkstra = calc_path(approx_path_dijkstra, source)
+        y_dijkstra.append(total_approx_dijkstra / total_dijkstra)
+
+        approx_path_bellman, _ = bellman_ford_limit(g, source, k)  # Unpack the tuple
+        total_approx_bellman = calc_path(approx_path_bellman, source)
+        y_bellman.append(total_approx_bellman / total_bellman)
+    plt.figure(figsize=(10, 6))
+    plt.plot(x, y_dijkstra, label='Dijkstra Approx')
+    plt.plot(x, y_bellman, label='Bellman-Ford Approx')
+    plt.xlabel('Relaxation Limit (k)')
+    plt.ylabel('Relative Path Cost')
+    plt.title('Impact of Relaxation Limit on Path Cost Accuracy')
+    plt.legend()
+    plt.show()
+    
 
 
 def mystery_fuction_exp():
-    max_nodes = 500
+    max_nodes = 200
     x=[]
     y=[]
     for i in range(1,max_nodes):
@@ -218,4 +199,5 @@ def mystery_fuction_exp():
 
 
 if __name__ == "__main__":
-    main(); main1()
+    main2()
+    
